@@ -35,9 +35,9 @@ Using LIEF we can access this information through the :attr:`~lief.ELF.Header.fi
   >>> print(ss.header.file_type)
   E_TYPE.DYNAMIC
 
-The main difference between a PIE binaries and a shared libraries is how symbols are exported.
+The main difference between PIE binaries and shared libraries is how symbols are exported.
 
-A shared library aims to expose functions so that executable can bind to it whereas executables shouldn't not expose functions [1]_
+A shared library aims to expose functions so that executables can bind to it whereas executables should not expose functions [1]_
 
 It's confirmed with the number of exported functions in the two different objects:
 
@@ -49,7 +49,7 @@ It's confirmed with the number of exported functions in the two different object
   10
 
 In this tutorial we will see how we can transform raw function addresses into exported functions associated with a symbol,
-thus thus exposing internal functions of the executable.
+thus exposing internal functions of the executable.
 
 Exporting functions
 ~~~~~~~~~~~~~~~~~~~
@@ -99,7 +99,7 @@ The ``__attribute__ ((noinline))`` is used to make sure the ``check_found``
 function won't be inlined by the compiler.  Indeed, if the function check is
 inlined, there won't be an address associated to this function.
 
-This figure sump-up the execution flow:
+This figure sums-up the execution flow:
 
 .. figure:: ../_static/tutorial/08/bin2lib_a.png
   :align: center
@@ -139,9 +139,9 @@ Now that we identified the address we can export it as a named function: ``check
   >>> crackme101.add_exported_function(0x72A, "check_found")
   >>> crackme101.write("libcrackme101.so")
 
-And that all!
+And that's all!
 
-``libcrackme101.so`` is now a **library** that export one function: ``check_found``.
+``libcrackme101.so`` is now a **library** that exports one function: ``check_found``.
 
 .. code-block:: python
 
@@ -201,7 +201,7 @@ Running the code above should give a similar output:
 
 If ``dlopen`` returns an error, please read `the following section about glibc >= 2.29 <#glibc229>`_.
 
-The transformation of the execution flow can be represented as follow:
+The transformation of the execution flow can be represented as follows:
 
 .. figure:: ../_static/tutorial/08/bin2lib_b.png
   :align: center
@@ -225,7 +225,7 @@ supported.  One of the reasons is that it `does not seem that trivial to
 support <https://sourceware.org/bugzilla/show_bug.cgi?id=11754>`_ all the
 possible use cases (issues with some relocations and ELF constructors).
 
-These glibc versions now `implements a check
+These glibc versions now `implement a check
 <https://patchwork.ozlabs.org/project/glibc/patch/20190312130235.8E82C89CE49C@oldenburg2.str.redhat.com/>`_
 to deny calls to ``dlopen`` with PIE binaries. This is done by verifying the
 ``DF_1_PIE`` flag isn't present in the list of dynamic information flags.
@@ -249,10 +249,10 @@ Conclusion
 
 Because PIE executables aim to be mapped at a random base address, they globally behave as a library. We only need to export the *interesting* functions.
 
-For non-PIE executables such transformation would be very difficult because it requires to transform first
+For non-PIE executables such transformations would be very difficult because it requires to first transform
 the executable into a *relocatable* executable. It means creating relocations, patching absolute *jump*, ...
 
-LIEF only support this transformation for ELF and we need to investigate the PE and Mach-O cases [3]_.
+LIEF only supports this transformation for ELF and we need to investigate the PE and Mach-O cases [3]_.
 
 
 .. rubric:: Notes
